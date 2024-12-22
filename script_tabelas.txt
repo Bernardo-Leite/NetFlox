@@ -1,0 +1,109 @@
+CREATE TABLE utilizador (
+	email	 VARCHAR(512),
+	password VARCHAR(512) NOT NULL,
+	nome	 VARCHAR(512) NOT NULL,
+	PRIMARY KEY(email)
+);
+
+CREATE TABLE mensagem (
+	id	 BIGINT,
+	texto	 VARCHAR(512),
+	assunto CHAR(255),
+	data	 TIMESTAMP,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE cliente (
+	saldo		 FLOAT(8),
+	utilizador_email VARCHAR(512),
+	PRIMARY KEY(utilizador_email)
+);
+
+CREATE TABLE leitura (
+	lida			 BOOL,
+	cliente_utilizador_email	 VARCHAR(512),
+	mensagem_id		 BIGINT,
+	cliente_utilizador_email1 VARCHAR(512) NOT NULL,
+	PRIMARY KEY(cliente_utilizador_email,mensagem_id)
+);
+
+CREATE TABLE admin (
+	utilizador_email VARCHAR(512),
+	PRIMARY KEY(utilizador_email)
+);
+
+CREATE TABLE artigos (
+	titulo	 VARCHAR(512),
+	id		 BIGINT,
+	preco	 FLOAT(8),
+	alugado	 BOOL,
+	tipo	 VARCHAR(512),
+	em_stock	 BOOL,
+	produtora_id BIGINT NOT NULL,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE realizadores (
+	id	 BIGINT,
+	nome VARCHAR(512),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE produtora (
+	id	 BIGINT,
+	nome VARCHAR(512),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE aluguer (
+	id			 BIGINT,
+	data			 TIMESTAMP,
+	preco			 FLOAT(8),
+	tempo_aluguer		 BIGINT,
+	confirmacao		 BOOL,
+	artigos_id		 BIGINT NOT NULL,
+	cliente_utilizador_email VARCHAR(512) NOT NULL,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE historico_preco (
+	preco			 FLOAT(8),
+	data			 TIMESTAMP,
+	id_modifica		 BIGINT,
+	artigos_id		 BIGINT NOT NULL,
+	admin_utilizador_email VARCHAR(512) NOT NULL,
+	PRIMARY KEY(id_modifica)
+);
+
+CREATE TABLE atores (
+	id	 BIGINT,
+	nome VARCHAR(512),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE atores_artigos (
+	atores_id	 BIGINT,
+	artigos_id BIGINT,
+	PRIMARY KEY(atores_id,artigos_id)
+);
+
+CREATE TABLE realizadores_artigos (
+	realizadores_id BIGINT,
+	artigos_id	 BIGINT,
+	PRIMARY KEY(realizadores_id,artigos_id)
+);
+
+ALTER TABLE cliente ADD CONSTRAINT cliente_fk1 FOREIGN KEY (utilizador_email) REFERENCES utilizador(email);
+ALTER TABLE leitura ADD CONSTRAINT leitura_fk1 FOREIGN KEY (cliente_utilizador_email) REFERENCES cliente(utilizador_email);
+ALTER TABLE leitura ADD CONSTRAINT leitura_fk2 FOREIGN KEY (mensagem_id) REFERENCES mensagem(id);
+ALTER TABLE leitura ADD CONSTRAINT leitura_fk3 FOREIGN KEY (cliente_utilizador_email1) REFERENCES cliente(utilizador_email);
+ALTER TABLE admin ADD CONSTRAINT admin_fk1 FOREIGN KEY (utilizador_email) REFERENCES utilizador(email);
+ALTER TABLE artigos ADD CONSTRAINT artigos_fk1 FOREIGN KEY (produtora_id) REFERENCES produtora(id);
+ALTER TABLE aluguer ADD CONSTRAINT aluguer_fk1 FOREIGN KEY (artigos_id) REFERENCES artigos(id);
+ALTER TABLE aluguer ADD CONSTRAINT aluguer_fk2 FOREIGN KEY (cliente_utilizador_email) REFERENCES cliente(utilizador_email);
+ALTER TABLE historico_preco ADD CONSTRAINT historico_preco_fk1 FOREIGN KEY (artigos_id) REFERENCES artigos(id);
+ALTER TABLE historico_preco ADD CONSTRAINT historico_preco_fk2 FOREIGN KEY (admin_utilizador_email) REFERENCES admin(utilizador_email);
+ALTER TABLE atores_artigos ADD CONSTRAINT atores_artigos_fk1 FOREIGN KEY (atores_id) REFERENCES atores(id);
+ALTER TABLE atores_artigos ADD CONSTRAINT atores_artigos_fk2 FOREIGN KEY (artigos_id) REFERENCES artigos(id);
+ALTER TABLE realizadores_artigos ADD CONSTRAINT realizadores_artigos_fk1 FOREIGN KEY (realizadores_id) REFERENCES realizadores(id);
+ALTER TABLE realizadores_artigos ADD CONSTRAINT realizadores_artigos_fk2 FOREIGN KEY (artigos_id) REFERENCES artigos(id);
